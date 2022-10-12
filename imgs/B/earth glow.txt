@@ -1,0 +1,2 @@
+inner : r240 g252 b255 #f0fcff 
+outer : r34 g83 b105 #225369

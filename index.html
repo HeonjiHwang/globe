@@ -1,0 +1,204 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+		<title>GLOBE</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<script src="./libs/babylon4/babylon.js"></script>
+		<script src="./libs/babylon4/babylonjs.loaders.min.js"></script>
+		<script src="./libs/babylon4/babylonjs.materials.min.js"></script>
+		<script src="./libs/babylon4/babylon.inspector.bundle.js"></script>
+		<script src="./libs/babylon4/babylon.gui.min.js"></script>
+		<script src="./libs/babylon4/earcut.min.js"></script>
+		<script src="./libs/dist/echarts.min.js"></script>
+		<script src="./libs/jquery-3.1.1.min.js"></script>
+		<script src="./libs/GlobeHandler.js"></script>
+		<script src="./libs/dist/bootstrap.min.js"></script>
+		<script src="./libs/dist/bootstrap-datepicker.min.js"></script>
+		<script src="./libs/dist/bootstrap-datepicker.ko.min.js"></script>
+		<link href="./libs/css/index.css" rel="stylesheet">
+		<link href="./libs/css/bootstrap-datepicker.standalone.min.css" rel="stylesheet">
+		<link href="./libs/css/bootstrap.css" rel="stylesheet">
+    </head>
+
+   <body>
+    <canvas id="viewport" touch-action="none"></canvas>
+	<button id="closeBtn" onclick="onRestore()">CLOSE</button>
+	<div class='toggle'>
+		<span>GLOBE 재질 변경</span><br>
+		<label class="switch">
+			<input type="checkbox" id="toggle_chk" onclick="changeGlobeMat()">
+			<span class="slider round"></span>
+		</label>
+	</div>
+
+	<div id="wrapper">
+		<div id="contents">
+			<table class="detail">
+				<tr>
+					<td class="agency_details" id="using_chart">
+						<div class="chart_wrapper">
+							<span id="title">통신사망 트래픽 사용량 & 회선비용</span>
+							<div class="detail_title_img" id="title_img"></div>
+							<div class="calendar" onclick="term_search_pop(this, 'AC')"></div>
+							<div class="detail_cost_wrapper">
+								<div id="detail_cost"><span id='txt_won'>&#8361; </span><span id="agency_won">0<span></div>
+								<div id="unit"><span style="" class="unit">&nbsp(단위 : 천원)</span></div>
+							</div>
+							<div id="agency_chart" class="chart_details"></div>
+						</div>
+					</td>
+					<td class="csp_details" id="using_chart">
+						<div class="chart_wrapper">
+							<span id="title">CSP 트래픽 사용량 & 회선비용</span>
+							<div class="detail_title_img" id="title_img"></div>
+							<div class="calendar" onclick="term_search_pop(this, 'CSP')"></div>
+							<div class="detail_cost_wrapper">
+								<div id="detail_cost"><span id='txt_won'>&#8361; </span><span id="csp_won">0<span></div>
+								<div id="unit"><span style="" class="unit">&nbsp(단위 : 천원)</span></div>
+							</div>
+							<div id="csp_chart" class="chart_details"></div>
+						</div>
+					</td>
+					<td class="cx_details" id="using_chart">
+						<div class="chart_wrapper">
+							<span id="title">CX 트래픽 사용량 & 회선비용</span>
+							<div class="detail_title_img" id="title_img"></div>
+							<div class="calendar" onclick="term_search_pop(this, 'CX')"></div>
+							<div class="detail_cost_wrapper">
+								<div id="detail_cost"><span id='txt_won'>&#8361; </span><span id="cx_won">0<span></div>
+								<div id="unit"><span style="" class="unit">&nbsp(단위 : 천원)</span></div>
+							</div>
+							<div id="cx_chart" class="chart_details"></div>
+						</div>
+					</td>
+				</tr>
+			</table>
+			
+			<table class="detail_title">
+				<tr style="height:60%;"><td><div class="image"></div></td></tr>
+				<tr style="height:13%;" class="title">
+					<td class="loc_title">SEC SUWON DC</td>
+				</tr>
+				<tr style="height:27%;" class="content">
+					<td>
+						<span class="location">ELECTRONICS SUWON DC</span><br>
+						<span class="status">Status : Good</span><br>
+						<span class="details">RTT : 1ms / Packet Loss : 0%</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div id="info">
+		<div id="traffic_box">
+			<span id="title">전체 트래픽 사용량 & 전체 회신비용</span>
+			<div class="traffic_title_img" id="title_img"></div>
+			<div class="calendar" onclick="term_search_pop(this, 'T')"></div>
+			<div class="costWrapper">
+				<div id="cost"><span id='txt_won'>&#8361; </span><span id="won">0<span></div>
+				<span style="" class="al">&nbsp(단위 : 천원)</span>
+			</div>
+			<div id="traffic_detail"></div>
+			<span class="pre_year">2020년</span>
+			<span class="cur_year">2021년</span>
+		</div>
+		<div id="topN_box">
+			<div id="csp">				
+				<span id="title">Top N CSP 사용량 (%)</span>
+				<div class="csp_title_img" id="title_img"></div>
+				<div class="calendar" onclick="term_search_pop(this, 'T')"></div>
+				<div id="pie_cloud">
+					<ul>
+						<li><div id="pie_aws"></div><span id="pie_title">AWS</span></li>
+						<li><div id="pie_azure"></div><span id="pie_title">AZURE</span></li>
+						<li><div id="pie_nbp"></div><span id="pie_title">NBP</span></li>
+						<li><div id="pie_oci"></div><span id="pie_title">OCI</span></li>
+					</ul>
+				</div>
+				<div id="bar_response"></div>
+				<div id="bar_packet"></div>
+				<div class="vertical_line"></div>
+			</div>
+			<div id="position">
+				<span id="title" class="topNhold">Top N 거점 트래픽 사용량 (Gbyte)</span>
+				<div class="position_title_img" id="title_img"></div>
+				<div class="calendar" onclick="term_search_pop(this, 'T')"></div>
+				<div id="position_detail"></div>
+			</div>
+		</div>
+		<div id="rate_box">
+			<div id="service">
+				<span id="title">서비스별 사용 비율 (%)</span>
+				<div class="service_title_img" id="title_img"></div>
+				<div class="calendar" onclick="term_search_pop(this, 'T')"></div>
+				<div id="pie_service"></div>
+			</div>
+			<div id="depart">
+				<span id="title">사업부별 사용 비율 (%)</span>
+				<div class="service_title_img" id="title_img"></div>
+				<div id="pie_depart"></div>
+			</div>
+		</div>		
+	</div>
+	
+	<div id="term_search">
+		<div class="term_title" onmousedown="dragMouseDown()"><span>기간 검색 옵션</span> <div><span onclick="close_term_pop()">X</span></div></div>
+		<div class="analasys_term_wrapper">
+			<span id="sub_title">분석 주기</span>
+			<ul>
+				<li><div class="setTerm" onclick="setTerm(this, 'Y')">년간</div></li>
+				<li><div class="setTerm" onclick="setTerm(this, 'M')" style="background-color:#00a8e9;color:white;">월간</div></li>
+				<li><div class="setTerm" onclick="setTerm(this, 'W')">주간</div></li>
+				<li><div class="setTerm" onclick="setTerm(this, 'D')">일간</div></li>
+				<li><div class="setTerm" onclick="setTerm(this, 'R')">실시간</div></li>
+			</ul>
+		</div>
+		<div class="select_temp_wrapper">
+			<span id="sub_title">기간 선택</span>
+			
+			<div id="start_date">
+				<input type="text" id="start" class="form-control" value="" onfocus='this.blur()'>
+			</div>
+			<span class='txt'>~</span>
+			<div id="end_date">
+				<input type="text" id="end" class="form-control" value="" onfocus='this.blur()'>
+			</div>
+		</div>
+		<div class="button_wrapper">
+			<button id="searchBtn" onclick="onSearch()">검색</button>
+		</div>
+	</div>
+	
+	<script>
+		var canvas = document.getElementById('viewport');
+		var engine = new BABYLON.Engine(canvas, true);
+		var handler = undefined;
+		var init = function(){
+			var scene = new BABYLON.Scene(engine);
+			handler = new GlobeHandler(scene, engine);
+			scene.onPointerDown = function(evt, pickResult){
+				var pickInfo = scene.pick(scene.pointerX, scene.pointerY, function(mesh){return mesh.isPickable;});
+				targetMesh = pickInfo.pickedMesh;
+				if(pickResult.hit){
+				}
+			}
+			return scene;
+		}
+		var scene = init();
+
+		engine.runRenderLoop(function(){
+			scene.render();
+		});
+
+		window.addEventListener('resize', function(){
+			handler.rePosition();
+			handler.chartResize();
+			engine.resize();
+		});
+	</script>
+	<script src="./libs/index.js"></script>
+   </body>
+
+</html>
